@@ -16,8 +16,10 @@ pnpm-debug.log*
 # Editor directories and files
 .idea
 .vscode
+.editorconfig
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+serviceAccount.json
