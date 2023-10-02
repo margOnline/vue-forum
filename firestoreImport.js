@@ -30,7 +30,7 @@ const serviceAccount = JSON.parse(
 async function jsonToFirestore () {
   try {
     console.log('Initialzing Firebase')
-    const firestore = await firestoreService.initializeFirebaseApp(
+    const firestore = firestoreService.initializeFirebaseApp(
       serviceAccount,
       firebaseConfig.databaseURL
     )
