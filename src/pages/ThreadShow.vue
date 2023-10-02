@@ -1,5 +1,5 @@
 <template>
-<div class="col-large push-top">
+<div v-if="asyncDataStatus_ready" class="col-large push-top">
   <h1>
     {{thread.title}}
     <router-link :to="{ name: 'ThreadEdit', params: { id: this.id }}">
@@ -26,11 +26,14 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 
 export default {
   name: 'ThreadShow',
+  mixins: [asyncDataStatus],
   props: {
     id: {
       type: String,
@@ -48,17 +51,17 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['createPost', 'fetchPost', 'fetchPosts', 'fetchUsers', 'fetchThread']),
     addPost (eventData) {
       const post = {
         ...eventData.post,
         threadId: this.id
       }
-      this.$store.dispatch('createPost', post)
+      this.createPost(post)
     }
   },
   computed: {
     thread () {
-      console.log('in computed thread')
       return this.$store.getters.thread(this.id)
     },
     threadPosts () {
@@ -66,13 +69,11 @@ export default {
     }
   },
   async created () {
-    const thread = await this.$store.dispatch('fetchThread', { id: this.id })
-    this.$store.dispatch('fetchUser', { id: thread.userId })
-
-    thread.posts.forEach(async (postId) => {
-      const post = await this.$store.dispatch('fetchPost', { id: postId })
-      this.$store.dispatch('fetchUser', { id: post.userId })
-    })
+    const thread = await this.fetchThread({ id: this.id })
+    const posts = await this.fetchPosts({ ids: thread.posts })
+    const userIds = posts.map(post => post.userId).concat(thread.userId)
+    await this.fetchUsers({ ids: userIds })
+    this.asyncDataStatus_fetched()
   }
 }
 </script>
