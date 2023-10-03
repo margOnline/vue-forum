@@ -15,6 +15,9 @@
       <div class="col-full">
         <p>{{post.text}}</p>
       </div>
+      <a href="#" style="margin-left: auto; padding-left:10px;" class="link-unstyled" title="Make a change">
+        <fa icon="pencil-alt"></fa>
+      </a>
     </div>
     <div class="post-date text-faded">
       <AppDate :timestamp="post.publishedAt"></AppDate>
