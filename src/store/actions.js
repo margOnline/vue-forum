@@ -6,7 +6,8 @@ import {
   getDocs,
   increment,
   serverTimestamp,
-  writeBatch
+  writeBatch,
+  updateDoc
 }
 from 'firebase/firestore'
 import db from '@/config/firebase'
@@ -61,6 +62,21 @@ export default {
     await dispatch('createPost', { text, threadId: threadRef.id })
     return findById(state.threads, threadRef.id)
   },
+  async updatePost ({ commit, state }, { id, text }) {
+    const post = {
+      text,
+      edited: {
+        by: state.authId,
+        at: serverTimestamp(),
+        moderated: false
+      }
+    }
+    const postRef = doc(db, 'posts', id)
+    await updateDoc(postRef, post)
+    const updatedPost = await getDoc(postRef)
+    commit('setItem', { resource: 'posts', item: updatedPost })
+    // return docToResource(updatedPost)
+  },
   async updateThread ({ commit, state }, { title, text, id }) {
     const thread = findById(state.threads, id)
     const post = findById(state.posts, thread.posts[0])
@@ -71,9 +87,9 @@ export default {
     const batch = writeBatch(db)
     batch.update(threadRef, newThread)
     batch.update(postRef, newPost)
+    await batch.commit()
     newThread = await getDoc(threadRef)
     newPost = await getDoc(postRef)
-    await batch.commit()
 
     commit('setItem', { resource: 'threads', item: newThread })
     commit('setItem', { resource: 'posts', item: newPost })
