@@ -10,7 +10,7 @@ import {
 }
 from 'firebase/firestore'
 import db from '@/config/firebase'
-import { findById } from '@/helpers'
+import { findById, docToResource } from '@/helpers'
 
 export default {
   async createPost ({ commit, state }, post) {
@@ -64,12 +64,20 @@ export default {
   async updateThread ({ commit, state }, { title, text, id }) {
     const thread = findById(state.threads, id)
     const post = findById(state.posts, thread.posts[0])
-    const newThread = { ...thread, title }
-    const newPost = { ...post, text }
+    let newThread = { ...thread, title }
+    let newPost = { ...post, text }
+    const threadRef = doc(db, 'threads', id)
+    const postRef = doc(db, 'posts', post.id)
+    const batch = writeBatch(db)
+    batch.update(threadRef, newThread)
+    batch.update(postRef, newPost)
+    newThread = await getDoc(threadRef)
+    newPost = await getDoc(postRef)
+    await batch.commit()
 
     commit('setItem', { resource: 'threads', item: newThread })
     commit('setItem', { resource: 'posts', item: newPost })
-    return newThread
+    return docToResource(newThread)
   },
   updateUser ({ commit }, user) {
     commit('setItem', { resource: 'users', item: user })
