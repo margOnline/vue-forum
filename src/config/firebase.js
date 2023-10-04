@@ -2,13 +2,13 @@ import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 
 const config = {
-  apiKey: 'AIzaSyDuRgK1iETwmgH8oDFB8bN_ZA7xCWui2do',
-  authDomain: 'vue-school-forum-59b92.firebaseapp.com',
-  projectId: 'vue-school-forum-59b92',
-  storageBucket: 'vue-school-forum-59b92.appspot.com',
-  messagingSenderId: '988699410763',
-  appId: '1:988699410763:web:d892add8b7489e33c4a8ce',
-  databaseURL: 'https://vue-school-forum-59b92-default-rtdb.europe-west1.firebasedatabase.app/'
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_FIREBASE_APP_ID,
+  databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL
 }
 
 const app = initializeApp(config)
