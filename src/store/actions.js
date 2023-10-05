@@ -6,10 +6,11 @@ import {
   getDocs,
   increment,
   serverTimestamp,
+  setDoc,
   writeBatch,
   updateDoc
-}
-from 'firebase/firestore'
+} from 'firebase/firestore'
+import * as auth from 'firebase/auth'
 import db from '@/config/firebase'
 import { findById, docToResource } from '@/helpers'
 
@@ -95,6 +96,24 @@ export default {
     commit('setItem', { resource: 'posts', item: newPost })
     return docToResource(newThread)
   },
+  async registerUserWithEmailAndPassword ({ dispatch }, { email, name, username, password, avatar = null }) {
+    const getAuth = auth.getAuth()
+    console.log('email: ', email)
+    console.log('getAuth: ', getAuth)
+    const result = await auth.createUserWithEmailAndPassword(getAuth, email, password)
+    await dispatch('createUser', { id: result.user.uid, email, name, username, avatar })
+  },
+  async createUser ({ commit }, { id, email, name, username, avatar = null }) {
+    const registeredAt = serverTimestamp()
+    const usernameLower = username.toLowerCase()
+    email = email.toLowerCase()
+    const user = { avatar, email, name, username, usernameLower, registeredAt }
+    const userRef = doc(db, 'users', id)
+    await setDoc(userRef, user)
+    const newUser = await getDoc(userRef)
+    commit('setItem', { resource: 'users', item: newUser })
+    return docToResource(newUser)
+  },
   updateUser ({ commit }, user) {
     commit('setItem', { resource: 'users', item: user })
   },
@@ -103,7 +122,7 @@ export default {
   fetchThread: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'threads', id, emoji: '📄' }),
   fetchPost: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'posts', id, emoji: '💬' }),
   fetchUser: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'users', id, emoji: '🙋' }),
-  fetchAuthUser: ({ dispatch, state }) => dispatch('fetchUser', { id: state.authId }),
+
   async fetchAllCategories ({ commit }) {
     const collectionRef = collection(db, 'categories')
     const collectionSnap = await getDocs(collectionRef)
