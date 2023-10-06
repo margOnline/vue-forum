@@ -7,6 +7,7 @@ import NotFound from '@/pages/NotFound'
 import Forum from '@/pages/Forum'
 import Category from '@/pages/Category'
 import Profile from '@/pages/Profile'
+import SignIn from '@/pages/SignIn'
 import Register from '@/pages/Register'
 
 const routes = [
@@ -77,6 +78,11 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: Register
+  },
+  {
+    path: '/signin',
+    name: 'SignIn',
+    component: SignIn
   },
   {
     path: '/:pathMatch(.*)*',

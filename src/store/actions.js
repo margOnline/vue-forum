@@ -101,6 +101,15 @@ export default {
     const result = await auth.createUserWithEmailAndPassword(getAuth, email, password)
     await dispatch('createUser', { id: result.user.uid, email, name, username, avatar })
   },
+  async signInWithEmailAndPassword (context, { email, password }) {
+    const getAuth = auth.getAuth()
+    return auth.signInWithEmailAndPassword(getAuth, email, password)
+  },
+  async signOut ({ commit }) {
+    const getAuth = auth.getAuth()
+    await auth.signOut(getAuth)
+    commit('setAuthId', null)
+  },
   async createUser ({ commit }, { id, email, name, username, avatar = null }) {
     const registeredAt = serverTimestamp()
     const usernameLower = username.toLowerCase()

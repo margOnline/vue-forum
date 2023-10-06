@@ -52,7 +52,6 @@ export default {
   },
   methods: {
     async register () {
-      console.log('in register')
       await this.$store.dispatch('registerUserWithEmailAndPassword', this.form)
       this.$router.push('./')
     }
