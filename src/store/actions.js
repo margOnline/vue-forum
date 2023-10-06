@@ -100,7 +100,6 @@ export default {
     const getAuth = auth.getAuth()
     const result = await auth.createUserWithEmailAndPassword(getAuth, email, password)
     await dispatch('createUser', { id: result.user.uid, email, name, username, avatar })
-    await dispatch('fetchAuthUser')
   },
   async createUser ({ commit }, { id, email, name, username, avatar = null }) {
     const registeredAt = serverTimestamp()

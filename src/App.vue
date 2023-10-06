@@ -8,7 +8,6 @@
 
 <script>
 import TheNavbar from '@/components/TheNavbar'
-import { mapActions } from 'vuex'
 import Nprogress from 'nprogress'
 
 export default {
@@ -20,14 +19,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['fetchAuthUser']),
     onPageReady () {
       this.showPage = true
       Nprogress.done()
     }
   },
   created () {
-    this.fetchAuthUser()
     Nprogress.configure({
       speed: 200,
       showSpinner: false

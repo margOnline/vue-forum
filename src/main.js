@@ -3,11 +3,19 @@ import App from './App.vue'
 import router from '@/router'
 import store from '@/store'
 import FontAwesome from '@/plugins/fontAwesome'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const forumApp = createApp(App)
 forumApp.use(router)
 forumApp.use(store)
 forumApp.use(FontAwesome)
+
+const auth = getAuth()
+onAuthStateChanged(auth, user => {
+  if (user) {
+    store.dispatch('fetchAuthUser')
+  }
+})
 
 const requireComponent = require.context('./components', true, /App[A-Z]\w+\.(vue|js)$/)
 requireComponent.keys().forEach(function (filename) {
