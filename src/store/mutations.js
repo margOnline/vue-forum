@@ -4,6 +4,10 @@ export default {
     upsert(state[resource], docToResource(item))
   },
 
+  setAuthId (state, id) {
+    state.authId = id
+  },
+
   appendPostToThread: makeAppendChildToParentMutation({ parent: 'threads', child: 'posts' }),
   appendThreadToForum: makeAppendChildToParentMutation({ parent: 'forums', child: 'threads' }),
   appendThreadToUser: makeAppendChildToParentMutation({ parent: 'users', child: 'threads' }),

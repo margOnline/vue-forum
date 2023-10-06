@@ -98,10 +98,9 @@ export default {
   },
   async registerUserWithEmailAndPassword ({ dispatch }, { email, name, username, password, avatar = null }) {
     const getAuth = auth.getAuth()
-    console.log('email: ', email)
-    console.log('getAuth: ', getAuth)
     const result = await auth.createUserWithEmailAndPassword(getAuth, email, password)
     await dispatch('createUser', { id: result.user.uid, email, name, username, avatar })
+    await dispatch('fetchAuthUser')
   },
   async createUser ({ commit }, { id, email, name, username, avatar = null }) {
     const registeredAt = serverTimestamp()
@@ -122,6 +121,16 @@ export default {
   fetchThread: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'threads', id, emoji: '📄' }),
   fetchPost: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'posts', id, emoji: '💬' }),
   fetchUser: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'users', id, emoji: '🙋' }),
+
+  fetchAuthUser: ({ dispatch, state, commit }) => {
+    const getAuth = auth.getAuth()
+    const userId = getAuth.currentUser?.uid
+
+    if (!userId) return
+
+    dispatch('fetchItem', { emoji: '🙋', resource: 'users', id: userId })
+    commit('setAuthId', userId)
+  },
 
   async fetchAllCategories ({ commit }) {
     const collectionRef = collection(db, 'categories')
