@@ -33,6 +33,13 @@
           <button type="submit" class="btn-blue btn-block">Register</button>
         </div>
       </form>
+
+      <div class="push-top text-center">
+        <button @click="registerWithGoogle" class="btn-red btn-xsmall">
+          <i class="fa fa-google fa-btn"></i>Sign up with Google
+        </button>
+      </div>
+
     </div>
   </div>
 </template>
@@ -53,7 +60,11 @@ export default {
   methods: {
     async register () {
       await this.$store.dispatch('registerUserWithEmailAndPassword', this.form)
-      this.$router.push('./')
+      this.$router.push('/')
+    },
+    async registerWithGoogle () {
+      await this.$store.dispatch('signInWithGoogle')
+      this.$router.push('/')
     }
   },
   created () {

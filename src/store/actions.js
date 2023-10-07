@@ -105,6 +105,17 @@ export default {
     const getAuth = auth.getAuth()
     return auth.signInWithEmailAndPassword(getAuth, email, password)
   },
+  async signInWithGoogle ({ dispatch }) {
+    const getAuth = auth.getAuth()
+    const provider = new auth.GoogleAuthProvider()
+    const response = await auth.signInWithPopup(getAuth, provider)
+    const user = response.user
+    const userRef = doc(db, 'users', user.uid)
+    const userDoc = await getDoc(userRef)
+    if (!userDoc.exists) {
+      return dispatch('createUser', { id: user.uid, name: user.displayName, email: user.email, username: user.email, avatar: user.photoURL })
+    }
+  },
   async signOut ({ commit }) {
     const getAuth = auth.getAuth()
     await auth.signOut(getAuth)
