@@ -9,6 +9,7 @@ import Category from '@/pages/Category'
 import Profile from '@/pages/Profile'
 import SignIn from '@/pages/SignIn'
 import Register from '@/pages/Register'
+import store from '@/store'
 
 const routes = [
   {
@@ -91,7 +92,7 @@ const routes = [
   }
 ]
 
-export default createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior (to) {
@@ -101,3 +102,8 @@ export default createRouter({
     return scroll
   }
 })
+router.beforeEach(() => {
+  store.dispatch('unsubscribeAllSnapshots')
+})
+
+export default router
