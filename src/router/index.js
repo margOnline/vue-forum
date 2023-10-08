@@ -24,6 +24,9 @@ const routes = [
     meta: {
       toTop: true,
       smoothScroll: true
+    },
+    beforeEnter (to, from) {
+      if (!store.state.authId) return { name: 'Home' }
     }
   },
   {

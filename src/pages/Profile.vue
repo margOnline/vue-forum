@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <div class="flex-grid">
+    <h1>My profile</h1>
+    <!-- <div class="flex-grid">
       <div class="col-3 push-top">
         <UserProfileCard v-if="!edit" :user="user"/>
         <UserProfileCardEditor v-else :user="user"/>
@@ -17,26 +18,26 @@
         <hr>
         <PostList :posts="user.posts"/>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-import PostList from '@/components/PostList'
-import UserProfileCard from '@/components/UserProfileCard.vue'
-import UserProfileCardEditor from '@/components/UserProfileCardEditor.vue'
+// import PostList from '@/components/PostList'
+// import UserProfileCard from '@/components/UserProfileCard.vue'
+// import UserProfileCardEditor from '@/components/UserProfileCardEditor.vue'
 import { mapGetters } from 'vuex'
 
 export default {
   props: {
-    edit: {
-      type: Boolean,
-      default: false
-    }
+    edit: { type: Boolean, default: false }
   },
   computed: {
     ...mapGetters({ user: 'authUser' })
   },
-  components: { PostList, UserProfileCard, UserProfileCardEditor }
+  created () {
+    this.$emit('ready')
+  }
+  // components: { PostList, UserProfileCard, UserProfileCardEditor }
 }
 </script>
