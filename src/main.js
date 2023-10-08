@@ -12,6 +12,7 @@ forumApp.use(FontAwesome)
 
 const auth = getAuth()
 onAuthStateChanged(auth, user => {
+  store.dispatch('unsubscribeAuthUserSnapshot')
   if (user) {
     store.dispatch('fetchAuthUser')
   }
