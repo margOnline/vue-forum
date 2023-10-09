@@ -129,7 +129,7 @@ export default {
     const user = response.user
     const userRef = doc(db, 'users', user.uid)
     const userDoc = await getDoc(userRef)
-    if (!userDoc.exists) {
+    if (!userDoc.exists()) {
       return dispatch('createUser', { id: user.uid, name: user.displayName, email: user.email, username: user.email, avatar: user.photoURL })
     }
   },
