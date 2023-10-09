@@ -49,20 +49,21 @@ const routes = [
     path: '/thread/:id',
     name: 'ThreadShow',
     component: ThreadShow,
-    props: true
-    // beforeEnter (to, then, next) {
-    //   const threadExists = sourceData.threads.find(thread => thread.id === to.params.id)
-    //   if (threadExists) {
-    //     return next()
-    //   } else {
-    //     next({
-    //       name: 'NotFound',
-    //       params: { pathMatch: to.path.substring(1).split('/') },
-    //       query: to.query,
-    //       hash: to.hash
-    //     })
-    //   }
-    // }
+    props: true,
+    async beforeEnter (to, then, next) {
+      await store.dispatch('fetchThread', { id: to.params.id })
+      const threadExists = store.state.threads.find(thread => thread.id === to.params.id)
+      if (threadExists) {
+        return next()
+      } else {
+        next({
+          name: 'NotFound',
+          params: { pathMatch: to.path.substring(1).split('/') },
+          query: to.query,
+          hash: to.hash
+        })
+      }
+    }
   },
   {
     path: '/forum/:forumId/thread/create',

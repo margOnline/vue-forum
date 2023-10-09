@@ -191,9 +191,13 @@ export default {
   async fetchItem ({ state, commit }, { id, emoji, resource, handleUnsubscribe = null }) {
     return new Promise((resolve) => {
       const unsubscribe = onSnapshot(doc(db, resource, id), (doc) => {
-        const item = { ...doc.data(), id: doc.id }
-        commit('setItem', { resource, item })
-        resolve(item)
+        if (doc.exists()) {
+          const item = { ...doc.data(), id: doc.id }
+          commit('setItem', { resource, item })
+          resolve(item)
+        } else {
+          resolve(null)
+        }
       })
       if (handleUnsubscribe) {
         handleUnsubscribe(unsubscribe)
