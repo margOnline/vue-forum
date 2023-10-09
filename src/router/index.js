@@ -89,6 +89,14 @@ const routes = [
     component: SignIn
   },
   {
+    path: '/logout',
+    name: 'Signout',
+    async beforeEnter (to, from) {
+      await store.dispatch('signOut')
+      return { name: 'Home' }
+    }
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: NotFound
