@@ -23,10 +23,8 @@ const routes = [
     component: Profile,
     meta: {
       toTop: true,
-      smoothScroll: true
-    },
-    beforeEnter (to, from) {
-      if (!store.state.authId) return { name: 'Home' }
+      smoothScroll: true,
+      requiresAuth: true
     }
   },
   {
@@ -113,8 +111,11 @@ const router = createRouter({
     return scroll
   }
 })
-router.beforeEach(() => {
+router.beforeEach((to, from) => {
   store.dispatch('unsubscribeAllSnapshots')
+  if (to.meta.requiresAuth && !store.state.authId) {
+    return { name: 'Home' }
+  }
 })
 
 export default router
