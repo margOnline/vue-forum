@@ -151,7 +151,18 @@ export default {
     commit('setItem', { resource: 'users', item: newUser })
     return docToResource(newUser)
   },
-  updateUser ({ commit }, user) {
+  async updateUser ({ commit }, user) {
+    const updates = {
+      avatar: user.avatar || null,
+      username: user.username || null,
+      name: user.name || null,
+      bio: user.bio || null,
+      website: user.website || null,
+      email: user.email || null,
+      location: user.location || null
+    }
+    const userRef = doc(db, 'users', user.id)
+    await updateDoc(userRef, updates)
     commit('setItem', { resource: 'users', item: user })
   },
   fetchCategory: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'categories', id, emoji: '🏷' }),
