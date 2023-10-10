@@ -6,8 +6,10 @@ import {
   getDocs,
   increment,
   onSnapshot,
+  query,
   serverTimestamp,
   setDoc,
+  where,
   writeBatch,
   updateDoc
 } from 'firebase/firestore'
@@ -181,6 +183,13 @@ export default {
       const item = { id: doc.id, ...doc.data() }
       commit('setItem', { resource: 'categories', item })
       return item
+    })
+  },
+  async fetchAuthUsersPosts ({ commit, state }) {
+    const postsQuery = query(collection(db, 'posts'), where('userId', '==', state.authId))
+    const posts = await getDocs(postsQuery)
+    posts.forEach(item => {
+      commit('setItem', { resource: 'posts', item })
     })
   },
   fetchCategories: ({ dispatch }, { ids }) => dispatch('fetchItems', { ids, resource: 'categories', emoji: '🏷' }),
