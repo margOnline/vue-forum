@@ -41,7 +41,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['fetchThread', 'updateThread', 'fetchPost']),
+    ...mapActions('threads', ['fetchThread', 'updateThread']),
+    ...mapActions('posts', ['fetchPost']),
     async save ({ title, text }) {
       const thread = await this.updateThread({
         id: this.id,

@@ -1,5 +1,6 @@
 <template>
 <div v-if="asyncDataStatus_ready" class="col-large push-top">
+  <h3>auth user: {{ authUser }}</h3>
   <h1>
     {{thread.title}}
     <router-link
@@ -55,12 +56,14 @@ export default {
   },
   data () {
     return {
-      threads: this.$store.state.threads,
-      posts: this.$store.state.posts
+      threads: this.$store.state.threads.items,
+      posts: this.$store.state.posts.items
     }
   },
   methods: {
-    ...mapActions(['createPost', 'fetchPost', 'fetchPosts', 'fetchUsers', 'fetchThread']),
+    ...mapActions('threads', ['fetchThread']),
+    ...mapActions('posts', ['createPost', 'fetchPost', 'fetchPosts']),
+    ...mapActions('users', ['fetchUsers']),
     addPost (eventData) {
       const post = {
         ...eventData.post,
@@ -70,9 +73,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['authUser']),
+    ...mapGetters(['auth/authUser']),
     thread () {
-      return this.$store.getters.thread(this.id)
+      return this.$store.getters['threads/thread'](this.id)
     },
     threadPosts () {
       return this.posts.filter(p => p.threadId === this.id)
