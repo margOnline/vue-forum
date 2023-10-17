@@ -9,6 +9,7 @@
 <script>
 import TheNavbar from '@/components/TheNavbar'
 import Nprogress from 'nprogress'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'App',
@@ -19,6 +20,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('auth', ['fetchAuthUser']),
     onPageReady () {
       this.showPage = true
       Nprogress.done()
