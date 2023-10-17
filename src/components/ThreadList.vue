@@ -29,8 +29,8 @@ export default {
   },
   data () {
     return {
-      posts: this.$store.state.posts,
-      users: this.$store.state.users
+      posts: this.$store.state.posts.items,
+      users: this.$store.state.users.items
     }
   },
   methods: {
