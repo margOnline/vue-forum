@@ -38,8 +38,8 @@ export default {
     }
   },
   actions: {
-    async createThread ({ commit, state, dispatch }, { title, text, forumId }) {
-      const userId = state.authId
+    async createThread ({ commit, state, dispatch, rootState }, { title, text, forumId }) {
+      const userId = rootState.auth.authId
       const publishedAt = serverTimestamp()
       const threadRef = doc(collection(db, 'threads'))
       const userRef = doc(db, 'users', userId)
@@ -59,8 +59,8 @@ export default {
       },
       { root: true }
       )
-      commit('users/appendThreadToForum', { parentId: forumId, childId: threadRef.id }, { root: true })
-      commit('forums/appendThreadToUser', { parentId: userId, childId: threadRef.id }, { root: true })
+      commit('forums/appendThreadToForum', { parentId: forumId, childId: threadRef.id }, { root: true })
+      commit('users/appendThreadToUser', { parentId: userId, childId: threadRef.id }, { root: true })
       await dispatch('posts/createPost', { text, threadId: threadRef.id }, { root: true })
       return findById(state.items, threadRef.id)
     },
