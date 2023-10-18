@@ -1,24 +1,37 @@
 <template>
-  <div class="col-full">
-    <div class="category-list">
-      <CategoryListItem
-        v-for="category in categories"
-        :key="category.id"
-        :category="category"
-      />
-    </div>
-  </div>
+  <ForumList
+    v-for="category in categories"
+    :key="category.id"
+    :forums="getForumsForCategory(category)"
+    :title="category.name"
+    :category-id="category.id"
+  />
 </template>
 
 <script>
-import CategoryListItem from '@/components/CategoryListItem'
+import ForumList from '@/components/ForumList'
 
 export default {
-  components: { CategoryListItem },
+  components: { ForumList },
   props: {
     categories: {
-      type: Array,
-      required: true
+      required: true,
+      type: Array
+    }
+  },
+  methods: {
+    getForumsForCategory (category) {
+      return this.$store.state.forums.items.filter(forum => forum.categoryId === category.id)
+    },
+    title (category) {
+      return category.name ? category.name : 'Forum'
+    },
+    forumThreadsWord (forum) {
+      if (forum.threads?.length) {
+        return forum.threads.length > 1 ? 'threads' : 'thread'
+      } else {
+        return 'no threads'
+      }
     }
   }
 }
