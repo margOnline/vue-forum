@@ -109,7 +109,7 @@ export default {
       state.authUserUnsubscribe = unsubscribe
     },
     setAuthObserverUnsubscribe (state, unsubscribe) {
-      state.setAuthObserverUnsubscribe = unsubscribe
+      state.authObserverUnsubscribe = unsubscribe
     }
   }
 }
