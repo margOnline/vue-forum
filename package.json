@@ -15,6 +15,7 @@
     "core-js": "^3.6.5",
     "dayjs": "^1.11.9",
     "firebase": "^10.4.0",
+    "lodash": "^4.17.21",
     "nprogress": "^0.2.0",
     "vue": "^3.2.26",
     "vue-router": "^4.2.4",
