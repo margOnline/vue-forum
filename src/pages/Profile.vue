@@ -29,17 +29,24 @@ import asyncDataStatus from '@/mixins/asyncDataStatus'
 import { mapGetters } from 'vuex'
 
 export default {
+  components: { PostList, UserProfileCard, UserProfileCardEditor },
   props: {
     edit: { type: Boolean, default: false }
   },
   mixins: [asyncDataStatus],
   computed: {
-    ...mapGetters('auth', { user: 'authUser' })
+    ...mapGetters('auth', { user: 'authUser' }),
+    lastPostFetched () {
+      console.log('in computed: ', this.user.posts.length)
+      if (this.user.posts.length === 0) return null
+      return this.user.posts[this.user.posts.length - 1]
+    }
   },
   async created () {
-    await this.$store.dispatch('auth/fetchAuthUsersPosts')
+    await this.$store.dispatch('auth/fetchAuthUsersPosts',
+      { lastVisible: this.lastPostFetched }
+    )
     this.asyncDataStatus_fetched()
-  },
-  components: { PostList, UserProfileCard, UserProfileCardEditor }
+  }
 }
 </script>

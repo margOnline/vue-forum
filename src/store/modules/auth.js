@@ -4,7 +4,10 @@ import {
   doc,
   getDoc,
   getDocs,
+  limit,
+  orderBy,
   query,
+  startAfter,
   where
 } from 'firebase/firestore'
 import db from '@/config/firebase'
@@ -87,9 +90,23 @@ export default {
       )
       commit('setAuthId', userId)
     },
-    async fetchAuthUsersPosts ({ commit, state }) {
-      const postsQuery = query(collection(db, 'posts'), where('userId', '==', state.authId))
+    async fetchAuthUsersPosts ({ commit, state }, { lastVisible }) {
+      let postsQuery
+      const commonQueryParams = [
+        collection(db, 'posts'),
+        where('userId', '==', state.authId),
+        orderBy('publishedAt', 'desc'),
+        limit(2)
+      ]
+
+      if (lastVisible) {
+        const lastPost = await getDoc(doc(db, 'posts', lastVisible.id))
+        postsQuery = query(...commonQueryParams, startAfter(lastPost))
+      } else {
+        postsQuery = query(...commonQueryParams)
+      }
       const posts = await getDocs(postsQuery)
+
       posts.forEach(item => {
         commit('setItem', { resource: 'posts', item }, { root: true })
       })
