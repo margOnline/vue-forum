@@ -8,7 +8,7 @@
 
 <script>
 import TheNavbar from '@/components/TheNavbar'
-import Nprogress from 'nprogress'
+import NProgress from 'nprogress'
 import { mapActions } from 'vuex'
 
 export default {
@@ -23,17 +23,18 @@ export default {
     ...mapActions('auth', ['fetchAuthUser']),
     onPageReady () {
       this.showPage = true
-      Nprogress.done()
+      NProgress.done()
     }
   },
   created () {
-    Nprogress.configure({
+    this.fetchAuthUser()
+    NProgress.configure({
       speed: 200,
       showSpinner: false
     })
     this.$router.beforeEach(() => {
       this.showPage = false
-      Nprogress.start()
+      NProgress.start()
     })
   }
 }

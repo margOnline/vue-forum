@@ -1,6 +1,5 @@
 <template>
 <div v-if="asyncDataStatus_ready" class="col-large push-top">
-  <h3>auth user: {{ authUser }}</h3>
   <h1>
     {{thread.title}}
     <router-link
@@ -73,7 +72,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['auth/authUser']),
+    ...mapGetters('auth', ['authUser']),
     thread () {
       return this.$store.getters['threads/thread'](this.id)
     },
