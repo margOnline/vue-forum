@@ -12,6 +12,8 @@ import {
   writeBatch
 } from 'firebase/firestore'
 import db from '@/config/firebase'
+import chunk from 'lodash/chunk'
+
 export default {
   namespaced: true,
   state: {
@@ -83,10 +85,19 @@ export default {
       return docToResource(newThread)
     },
     fetchThread: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'threads', id, emoji: '📄' }, { root: true }),
-    fetchThreads: ({ dispatch }, { ids }) => dispatch('fetchItems', { ids, resource: 'threads', emoji: '📄' }, { root: true })
+    fetchThreads: ({ dispatch }, { ids }) => dispatch('fetchItems', { ids, resource: 'threads', emoji: '📄' }, { root: true }),
+    fetchThreadsByPage: ({ dispatch, commit }, { ids, page, perPage = 5 }) => {
+      commit('clearThreads')
+      const chunks = chunk(ids, perPage)
+      const perPageIds = chunks[page - 1]
+      return dispatch('fetchThreads', { ids: perPageIds })
+    }
   },
   mutations: {
     appendPostToThread: makeAppendChildToParentMutation({ parent: 'threads', child: 'posts' }),
-    appendContributorToThread: makeAppendChildToParentMutation({ parent: 'threads', child: 'contributors' })
+    appendContributorToThread: makeAppendChildToParentMutation({ parent: 'threads', child: 'contributors' }),
+    clearThreads (state) {
+      state.items = []
+    }
   }
 }
