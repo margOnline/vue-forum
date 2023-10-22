@@ -9,7 +9,7 @@ import {
   updateDoc
 } from 'firebase/firestore'
 import db from '@/config/firebase'
-import { findById } from '@/helpers'
+import { findById, makeFetchItemAction, makeFetchItemsAction } from '@/helpers'
 export default {
   namespaced: true,
   state: {
@@ -65,8 +65,8 @@ export default {
       commit('setItem', { resource: 'posts', item: updatedPost }, { root: true })
       // return docToResource(updatedPost)
     },
-    fetchPost: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'posts', id, emoji: '💬' }, { root: true }),
-    fetchPosts: ({ dispatch }, { ids }) => dispatch('fetchItems', { ids, resource: 'posts', emoji: '💬' }, { root: true })
+    fetchPost: makeFetchItemAction({ resource: 'posts', emoji: '💬' }),
+    fetchPosts: makeFetchItemsAction({ resource: 'posts', emoji: '💬' })
   },
   mutations: {}
 }

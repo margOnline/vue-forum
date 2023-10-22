@@ -1,7 +1,9 @@
 import {
   findById,
   docToResource,
-  makeAppendChildToParentMutation
+  makeAppendChildToParentMutation,
+  makeFetchItemAction,
+  makeFetchItemsAction
 } from '@/helpers'
 import {
   arrayUnion,
@@ -84,8 +86,8 @@ export default {
       commit('setItem', { resource: 'posts', item: newPost }, { root: true })
       return docToResource(newThread)
     },
-    fetchThread: ({ dispatch }, { id }) => dispatch('fetchItem', { resource: 'threads', id, emoji: '📄' }, { root: true }),
-    fetchThreads: ({ dispatch }, { ids }) => dispatch('fetchItems', { ids, resource: 'threads', emoji: '📄' }, { root: true }),
+    fetchThread: makeFetchItemAction({ resource: 'threads', emoji: '📄' }),
+    fetchThreads: makeFetchItemsAction({ resource: 'threads', emoji: '📄' }),
     fetchThreadsByPage: ({ dispatch, commit }, { ids, page, perPage = 5 }) => {
       commit('clearThreads')
       const chunks = chunk(ids, perPage)

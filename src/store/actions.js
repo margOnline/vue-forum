@@ -2,9 +2,12 @@ import { doc, onSnapshot } from 'firebase/firestore'
 import db from '@/config/firebase'
 
 export default {
-  async fetchItem ({ state, commit }, { id, emoji, resource, handleUnsubscribe = null }) {
+  async fetchItem ({ state, commit }, { id, emoji, resource, handleUnsubscribe = null, once = false }) {
     return new Promise((resolve) => {
       const unsubscribe = onSnapshot(doc(db, resource, id), (doc) => {
+        if (once) {
+          unsubscribe()
+        }
         if (doc.exists()) {
           const item = { ...doc.data(), id: doc.id }
           commit('setItem', { resource, item })

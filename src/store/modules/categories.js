@@ -1,5 +1,6 @@
 import { collection, getDocs } from 'firebase/firestore'
 import db from '@/config/firebase'
+import { makeFetchItemsAction } from '@/helpers'
 export default {
   namespaced: true,
   state: {
@@ -20,10 +21,7 @@ export default {
         return item
       })
     },
-    fetchCategories: ({ dispatch }, { ids }) => dispatch('fetchItems',
-      { ids, resource: 'categories', emoji: '🏷' },
-      { root: true }
-    )
+    fetchCategories: makeFetchItemsAction({ resource: 'categories', emoji: '🏷' })
   },
   mutations: {}
 }

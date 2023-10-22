@@ -6,7 +6,13 @@ import {
   updateDoc
 } from 'firebase/firestore'
 import db from '@/config/firebase'
-import { findById, docToResource, makeAppendChildToParentMutation } from '@/helpers'
+import {
+  findById,
+  docToResource,
+  makeAppendChildToParentMutation,
+  makeFetchItemAction,
+  makeFetchItemsAction
+} from '@/helpers'
 export default {
   namespaced: true,
   state: {
@@ -62,14 +68,8 @@ export default {
       await updateDoc(userRef, updates)
       commit('setItem', { resource: 'users', item: user }, { root: true })
     },
-    fetchUser: ({ dispatch }, { id }) => dispatch('fetchItem',
-      { resource: 'users', id, emoji: '🙋' },
-      { root: true }
-    ),
-    fetchUsers: ({ dispatch }, { ids }) => dispatch('fetchItems',
-      { ids, resource: 'users', emoji: '🙋' },
-      { root: true }
-    )
+    fetchUser: makeFetchItemAction({ resource: 'users', emoji: '🙋' }),
+    fetchUsers: makeFetchItemsAction({ resource: 'users', emoji: '🙋' })
   },
   mutations: {
     appendThreadToUser: makeAppendChildToParentMutation({ parent: 'users', child: 'threads' })
