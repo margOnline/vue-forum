@@ -77,7 +77,13 @@ export default {
       this.createPost(post)
     },
     async fetchPostsWithUsers (ids) {
-      const posts = await this.fetchPosts({ ids })
+      const posts = await this.fetchPosts({
+        ids,
+        snapshot: ({ isLocal, previousItem }) => {
+          if (!this.asyncDataStatus_ready || isLocal || (previousItem?.edited && !previousItem.edited?.at)) return
+          this.addNotification({ message: 'Thread recently updated' })
+        }
+      })
       const userIds = posts.map(post => post.userId).concat(this.thread.userId)
       await this.fetchUsers({ ids: userIds })
     }
@@ -96,9 +102,13 @@ export default {
       id: this.id,
       snapshot: async ({ isLocal, item, previousItem }) => {
         if (!this.asyncDataStatus_ready || isLocal) return
-        const newPostIds = difference(item.posts, previousItem.posts)
-        this.fetchPostsWithUsers(newPostIds)
-        this.addNotification({ message: 'Thread recently updated' })
+        const newPosts = difference(item.posts, previousItem.posts)
+        const hasNewPosts = newPosts.length > 0
+        if (hasNewPosts) {
+          this.fetchPostsWithUsers(newPosts)
+        } else {
+          this.addNotification({ message: 'Thread recently updated' })
+        }
       }
     })
     await this.fetchPostsWithUsers(thread.posts)
