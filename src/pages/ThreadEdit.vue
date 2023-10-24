@@ -33,10 +33,10 @@ export default {
   },
   computed: {
     thread () {
-      return this.$store.state.threads.find(thread => thread.id === this.id)
+      return findById(this.$store.state.threads.items, this.id)
     },
     text () {
-      const post = findById(this.$store.state.posts, this.thread.posts[0])
+      const post = findById(this.$store.state.posts.items, this.thread.posts[0])
       return post ? post.text : ''
     }
   },
