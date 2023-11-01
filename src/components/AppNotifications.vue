@@ -36,7 +36,7 @@ export default {
     margin-bottom: 5px;
     border-left: 5px solid #263959;
 }
-.notification-enter-active, .notification-enter-leave {
+.notification-enter-active, .notification-leave-active {
   transition: all .5s ease;
 }
 .notification-enter-from, .notification-leave-to {
