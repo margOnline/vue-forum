@@ -45,15 +45,23 @@ export default {
     async registerUserWithEmailAndPassword ({ dispatch }, { email, name, username, password, avatar = null }) {
       const getAuth = auth.getAuth()
       const result = await auth.createUserWithEmailAndPassword(getAuth, email, password)
+      avatar = await dispatch('uploadAvatar', { authId: result.user.uid, file: avatar })
       if (avatar) {
-        const storageBucket = ref(getStorage(), `uploads/${result.user.uid}/images/${Date.now()}-${avatar.name}`)
-        const snapshot = await uploadBytes(storageBucket, avatar)
-        avatar = await getDownloadURL(snapshot.ref)
+        await this.uploadAvatar({ authId: result.user.uid, file: avatar })
       }
       await dispatch('users/createUser',
         { id: result.user.uid, email, name, username, avatar },
         { root: true }
       )
+    },
+    async uploadAvatar ({ state }, { authId, file }) {
+      if (!file) return null
+
+      authId = authId || state.authId
+      const storageBucket = ref(getStorage(), `uploads/${authId}/images/${Date.now()}-${file.name}`)
+      const snapshot = await uploadBytes(storageBucket, file)
+      const url = await getDownloadURL(snapshot.ref)
+      return url
     },
     async signInWithEmailAndPassword (context, { email, password }) {
       const getAuth = auth.getAuth()

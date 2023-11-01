@@ -2,7 +2,14 @@
   <div class="profile-card">
     <form @submit.prevent="save">
       <p class="text-center">
-        <img :src="user.avatar" :alt="`${user.name} profile picture`" class="avatar-xlarge img-update">
+        <label for="avatar">
+          <img
+            :src="user.avatar"
+            :alt="`${user.name} profile picture`"
+            class="avatar-xlarge img-update"
+          >
+          <input v-show="false" type="file" id="avatar" accept="image/*" @change="handleAvatarUpload">
+        </label>
       </p>
 
       <div class="form-group">
@@ -49,6 +56,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   data () {
     return {
@@ -62,6 +71,11 @@ export default {
     }
   },
   methods: {
+    ...mapActions('auth', ['uploadAvatar']),
+    async handleAvatarUpload (e) {
+      const file = e.target.files[0]
+      this.activeUser.avatar = await this.uploadAvatar({ file })
+    },
     save () {
       this.$store.dispatch('users/updateUser', { ...this.activeUser })
       this.$router.push({ name: 'Profile' })
