@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore'
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
 import db from '@/config/firebase'
+import useNotifications from '@/composables/useNotifications'
 
 export default {
   namespaced: true,
@@ -56,12 +57,15 @@ export default {
     },
     async uploadAvatar ({ state }, { authId, file }) {
       if (!file) return null
-
-      authId = authId || state.authId
-      const storageBucket = ref(getStorage(), `uploads/${authId}/images/${Date.now()}-${file.name}`)
-      const snapshot = await uploadBytes(storageBucket, file)
-      const url = await getDownloadURL(snapshot.ref)
-      return url
+      try {
+        authId = authId || state.authId
+        const storageBucket = ref(getStorage(), `uploads/${authId}/images/${Date.now()}-${file.name}`)
+        const snapshot = await uploadBytes(storageBucket, file)
+        const url = await getDownloadURL(snapshot.ref)
+        return url
+      } catch (error) {
+        useNotifications().addNotification({ message: 'Error uploading avatar', type: 'error' })
+      }
     },
     async signInWithEmailAndPassword (context, { email, password }) {
       const getAuth = auth.getAuth()
