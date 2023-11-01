@@ -3,11 +3,11 @@
     <form @submit.prevent="save">
       <p class="text-center avatar-edit">
         <label for="avatar">
-          <img
+          <AppAvatarImage
             :src="activeUser.avatar"
             :alt="`${user.name} profile picture`"
             class="avatar-xlarge img-update"
-          >
+          />
           <div class="avatar-upload-overlay">
             <AppSpinner v-if="uploadingImage" color="white" />
             <fa v-else icon="camera" size="3x" :style="{color: 'white', opacity: '0.8'}" />

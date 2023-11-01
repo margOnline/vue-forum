@@ -15,11 +15,11 @@
 
     <div class="activity">
       <p class="replies-count">{{ thread.repliesCount }} replies</p>
-      <img
+      <AppAvatarImage
         :src="user.avatar"
         :alt="user.name"
         class="avatar-medium"
-      >
+      />
       <div>
         <p class="text-xsmall">
           <a href="#">{{ user.name }}</a>
@@ -31,7 +31,6 @@
 </template>
 
 <script>
-
 export default {
   props: {
     thread: {
