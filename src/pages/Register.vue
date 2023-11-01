@@ -1,27 +1,36 @@
 <template>
   <div class="flex-grid justify-center">
     <div class="col-2">
-      <form @submit.prevent="register" class="card card-form">
+      <VeeForm @submit="register" class="card card-form" :validation-schema="{
+        name: (value) => {
+          if (value && value.trim()) return true
+          return 'This is a required field'
+        },
+        username: (value) => {
+          if (value && value.trim()) return true
+          return 'This is a required field'
+        }
+      }">
         <h1 class="text-center">Register</h1>
 
         <div class="form-group">
           <label for="name">Full Name</label>
-          <input v-model="form.name" type="text" id="name" class="form-input" />
+          <VeeField name="name" v-model="form.name" type="text" id="name" class="form-input" />
         </div>
 
         <div class="form-group">
           <label for="username">Username</label>
-          <input v-model="form.username" type="text" id="username" class="form-input" />
+          <VeeField name="username" v-model="form.username" type="text" id="username" class="form-input" />
         </div>
 
         <div class="form-group">
           <label for="email">Email</label>
-          <input v-model="form.email" type="email" id="email" class="form-input" />
+          <VeeField name="email" v-model="form.email" type="email" id="email" class="form-input" />
         </div>
 
         <div class="form-group">
           <label for="password">Password</label>
-          <input v-model="form.password" type="password" id="password" class="form-input" />
+          <VeeField name="password" v-model="form.password" type="password" id="password" class="form-input" />
         </div>
 
         <div class="form-group">
@@ -31,7 +40,8 @@
               <img :src="avatarPreview" alt="image of avatar" class="avatar-xlarge">
             </div>
           </label>
-          <input
+          <VeeField
+            name="avatar"
             v-show="!avatarPreview"
             id="avatar"
             type="file"
@@ -44,7 +54,7 @@
         <div class="form-actions">
           <button type="submit" class="btn-blue btn-block">Register</button>
         </div>
-      </form>
+      </VeeForm>
 
       <div class="push-top text-center">
         <button @click="registerWithGoogle" class="btn-red btn-xsmall">
@@ -57,7 +67,9 @@
 </template>
 
 <script>
+import { Form, Field } from 'vee-validate'
 export default {
+  components: { VeeForm: Form, VeeField: Field },
   data () {
     return {
       form: {
