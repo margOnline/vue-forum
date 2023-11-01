@@ -10,6 +10,7 @@ import {
   startAfter,
   where
 } from 'firebase/firestore'
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
 import db from '@/config/firebase'
 
 export default {
@@ -44,6 +45,11 @@ export default {
     async registerUserWithEmailAndPassword ({ dispatch }, { email, name, username, password, avatar = null }) {
       const getAuth = auth.getAuth()
       const result = await auth.createUserWithEmailAndPassword(getAuth, email, password)
+      if (avatar) {
+        const storageBucket = ref(getStorage(), `uploads/${result.user.uid}/images/${Date.now()}-${avatar.name}`)
+        const snapshot = await uploadBytes(storageBucket, avatar)
+        avatar = await getDownloadURL(snapshot.ref)
+      }
       await dispatch('users/createUser',
         { id: result.user.uid, email, name, username, avatar },
         { root: true }
@@ -96,7 +102,7 @@ export default {
         collection(db, 'posts'),
         where('userId', '==', state.authId),
         orderBy('publishedAt', 'desc'),
-        limit(2)
+        limit(5)
       ]
 
       if (lastVisible) {
