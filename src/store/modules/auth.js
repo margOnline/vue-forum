@@ -55,11 +55,12 @@ export default {
         { root: true }
       )
     },
-    async uploadAvatar ({ state }, { authId, file }) {
+    async uploadAvatar ({ state }, { authId, file, filename }) {
       if (!file) return null
       try {
         authId = authId || state.authId
-        const storageBucket = ref(getStorage(), `uploads/${authId}/images/${Date.now()}-${file.name}`)
+        filename = filename || file.name
+        const storageBucket = ref(getStorage(), `uploads/${authId}/images/${Date.now()}-${filename}`)
         const snapshot = await uploadBytes(storageBucket, file)
         const url = await getDownloadURL(snapshot.ref)
         return url
