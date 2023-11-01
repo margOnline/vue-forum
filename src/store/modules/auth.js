@@ -10,7 +10,9 @@ import {
   startAfter,
   where
 } from 'firebase/firestore'
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
 import db from '@/config/firebase'
+import useNotifications from '@/composables/useNotifications'
 
 export default {
   namespaced: true,
@@ -44,10 +46,26 @@ export default {
     async registerUserWithEmailAndPassword ({ dispatch }, { email, name, username, password, avatar = null }) {
       const getAuth = auth.getAuth()
       const result = await auth.createUserWithEmailAndPassword(getAuth, email, password)
+      avatar = await dispatch('uploadAvatar', { authId: result.user.uid, file: avatar })
+      if (avatar) {
+        await this.uploadAvatar({ authId: result.user.uid, file: avatar })
+      }
       await dispatch('users/createUser',
         { id: result.user.uid, email, name, username, avatar },
         { root: true }
       )
+    },
+    async uploadAvatar ({ state }, { authId, file }) {
+      if (!file) return null
+      try {
+        authId = authId || state.authId
+        const storageBucket = ref(getStorage(), `uploads/${authId}/images/${Date.now()}-${file.name}`)
+        const snapshot = await uploadBytes(storageBucket, file)
+        const url = await getDownloadURL(snapshot.ref)
+        return url
+      } catch (error) {
+        useNotifications().addNotification({ message: 'Error uploading avatar', type: 'error' })
+      }
     },
     async signInWithEmailAndPassword (context, { email, password }) {
       const getAuth = auth.getAuth()
@@ -96,7 +114,7 @@ export default {
         collection(db, 'posts'),
         where('userId', '==', state.authId),
         orderBy('publishedAt', 'desc'),
-        limit(2)
+        limit(5)
       ]
 
       if (lastVisible) {

@@ -10,23 +10,35 @@
         </div>
 
         <div class="form-group">
-          <label for="name">Username</label>
+          <label for="username">Username</label>
           <input v-model="form.username" type="text" id="username" class="form-input" />
         </div>
 
         <div class="form-group">
-          <label for="name">Email</label>
+          <label for="email">Email</label>
           <input v-model="form.email" type="email" id="email" class="form-input" />
         </div>
 
         <div class="form-group">
-          <label for="name">Password</label>
+          <label for="password">Password</label>
           <input v-model="form.password" type="password" id="password" class="form-input" />
         </div>
 
         <div class="form-group">
-          <label for="name">Avatar</label>
-          <input v-model="form.avatar" type="text" id="avatar" class="form-input" />
+          <label for="avatar">
+            Avatar
+            <div v-if="avatarPreview">
+              <img :src="avatarPreview" alt="image of avatar" class="avatar-xlarge">
+            </div>
+          </label>
+          <input
+            v-show="!avatarPreview"
+            id="avatar"
+            type="file"
+            class="form-input"
+            @change="handleImageUpload"
+            accept="image/*"
+          />
         </div>
 
         <div class="form-actions">
@@ -54,7 +66,8 @@ export default {
         email: '',
         password: '',
         avatar: ''
-      }
+      },
+      avatarPreview: null
     }
   },
   methods: {
@@ -65,6 +78,14 @@ export default {
     async registerWithGoogle () {
       await this.$store.dispatch('auth/signInWithGoogle')
       this.$router.push('/')
+    },
+    handleImageUpload (e) {
+      this.form.avatar = e.target.files[0]
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        this.avatarPreview = event.target.result
+      }
+      reader.readAsDataURL(this.form.avatar)
     }
   },
   created () {
