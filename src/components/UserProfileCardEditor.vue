@@ -1,13 +1,17 @@
 <template>
   <div class="profile-card">
     <form @submit.prevent="save">
-      <p class="text-center">
+      <p class="text-center avatar-edit">
         <label for="avatar">
           <img
-            :src="user.avatar"
+            :src="activeUser.avatar"
             :alt="`${user.name} profile picture`"
             class="avatar-xlarge img-update"
           >
+          <div class="avatar-upload-overlay">
+            <AppSpinner v-if="uploadingImage" color="white" />
+            <fa v-else icon="camera" size="3x" :style="{color: 'white', opacity: '0.8'}" />
+          </div>
           <input v-show="false" type="file" id="avatar" accept="image/*" @change="handleAvatarUpload">
         </label>
       </p>
@@ -61,7 +65,8 @@ import { mapActions } from 'vuex'
 export default {
   data () {
     return {
-      activeUser: { ...this.user }
+      activeUser: { ...this.user },
+      uploadingImage: false
     }
   },
   props: {
@@ -73,8 +78,10 @@ export default {
   methods: {
     ...mapActions('auth', ['uploadAvatar']),
     async handleAvatarUpload (e) {
+      this.uploadingImage = true
       const file = e.target.files[0]
       this.activeUser.avatar = await this.uploadAvatar({ file })
+      this.uploadingImage = false
     },
     save () {
       this.$store.dispatch('users/updateUser', { ...this.activeUser })
@@ -86,3 +93,14 @@ export default {
   }
 }
 </script>
+<style>
+.avatar-edit {
+  position: relative;
+}
+.avatar-edit .avatar-upload-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>
