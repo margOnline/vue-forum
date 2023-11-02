@@ -1,26 +1,26 @@
 <template>
   <div class="flex-grid justify-center">
     <div class="col-2">
-      <VeeForm @submit="register" class="card card-form" :validation-schema="{
-        name: (value) => {
-          if (value && value.trim()) return true
-          return 'This is a required field'
-        },
-        username: (value) => {
-          if (value && value.trim()) return true
-          return 'This is a required field'
-        }
-      }">
+      <VeeForm @submit="register" class="card card-form">
         <h1 class="text-center">Register</h1>
 
         <div class="form-group">
           <label for="name">Full Name</label>
-          <VeeField name="name" v-model="form.name" type="text" id="name" class="form-input" />
+          <VeeField
+            name="name"
+            v-model="form.name"
+            type="text"
+            id="name"
+            class="form-input"
+            :rules="required"
+          />
+          <VeeErrorMessage name="name" class="form-error" />
         </div>
 
         <div class="form-group">
           <label for="username">Username</label>
-          <VeeField name="username" v-model="form.username" type="text" id="username" class="form-input" />
+          <VeeField name="username" v-model="form.username" type="text" id="username" class="form-input" :rules="required" />
+          <VeeErrorMessage name="username" class="form-error" />
         </div>
 
         <div class="form-group">
@@ -67,9 +67,9 @@
 </template>
 
 <script>
-import { Form, Field } from 'vee-validate'
+import { Form, Field, ErrorMessage } from 'vee-validate'
 export default {
-  components: { VeeForm: Form, VeeField: Field },
+  components: { VeeForm: Form, VeeField: Field, VeeErrorMessage: ErrorMessage },
   data () {
     return {
       form: {
@@ -83,6 +83,10 @@ export default {
     }
   },
   methods: {
+    required (value) {
+      if (value && value.trim()) return true
+      return 'This is a required field'
+    },
     async register () {
       await this.$store.dispatch('auth/registerUserWithEmailAndPassword', this.form)
       this.$router.push('/')
