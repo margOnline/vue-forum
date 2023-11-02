@@ -25,7 +25,8 @@
 
         <div class="form-group">
           <label for="email">Email</label>
-          <VeeField name="email" v-model="form.email" type="email" id="email" class="form-input" />
+          <VeeField name="email" v-model="form.email" type="email" id="email" class="form-input" rules="required|email" />
+          <VeeErrorMessage name="email" class="form-error" />
         </div>
 
         <div class="form-group">
