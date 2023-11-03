@@ -10,12 +10,13 @@ export default (app) => {
   defineRule('min', min)
   defineRule('url', url)
   defineRule('unique', async (value, args) => {
-    let dbCollection, field
+    let dbCollection, field, excluding
     if (Array.isArray(args)) {
-      [dbCollection, field] = args
+      [dbCollection, field, excluding] = args
     } else {
-      ({ dbCollection, field } = args)
+      ({ dbCollection, field, excluding } = args)
     }
+    if (value === excluding) return true
     const q = query(collection(db, dbCollection), where(field, '==', value))
     const querySnapshot = await getDocs(q)
     return querySnapshot.empty
