@@ -1,28 +1,41 @@
 <template>
   <div class="flex-grid justify-center">
     <div class="col-2">
-      <form @submit.prevent="register" class="card card-form">
+      <VeeForm @submit="register" class="card card-form">
         <h1 class="text-center">Register</h1>
+        <AppFormField
+          v-model="form.name"
+          name="name"
+          label="Name"
+          modelValue="name"
+          rules="required"
+        />
 
-        <div class="form-group">
-          <label for="name">Full Name</label>
-          <input v-model="form.name" type="text" id="name" class="form-input" />
-        </div>
+        <AppFormField
+          v-model="form.username"
+          name="username"
+          label="Username"
+          modelValue="username"
+          rules="required|unique:users,username"
+        />
 
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input v-model="form.username" type="text" id="username" class="form-input" />
-        </div>
+        <AppFormField
+          v-model="form.email"
+          name="email"
+          label="Email"
+          type="email"
+          modelValue="email"
+          rules="required|unique:users,email|email"
+        />
 
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input v-model="form.email" type="email" id="email" class="form-input" />
-        </div>
-
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input v-model="form.password" type="password" id="password" class="form-input" />
-        </div>
+        <AppFormField
+          v-model="form.password"
+          name="password"
+          label="Password"
+          type="password"
+          modelValue="password"
+          rules="required|min:8"
+        />
 
         <div class="form-group">
           <label for="avatar">
@@ -31,7 +44,8 @@
               <img :src="avatarPreview" alt="image of avatar" class="avatar-xlarge">
             </div>
           </label>
-          <input
+          <VeeField
+            name="avatar"
             v-show="!avatarPreview"
             id="avatar"
             type="file"
@@ -44,7 +58,7 @@
         <div class="form-actions">
           <button type="submit" class="btn-blue btn-block">Register</button>
         </div>
-      </form>
+      </VeeForm>
 
       <div class="push-top text-center">
         <button @click="registerWithGoogle" class="btn-red btn-xsmall">
