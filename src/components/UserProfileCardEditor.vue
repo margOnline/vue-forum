@@ -69,7 +69,16 @@
         v-model="activeUser.location"
         name="location"
         label="Location"
+        list="locations"
+        @mouseenter="loadLocationOptions"
       />
+      <datalist id="locations">
+        <option
+          v-for="location in locationOptions"
+          :value="location.name.common"
+          :key="location.name.common"
+        />
+      </datalist>
 
       <div class="btn-group space-between">
         <button @click.prevent="cancel" class="btn-ghost">Cancel</button>
@@ -89,7 +98,8 @@ export default {
   data () {
     return {
       activeUser: { ...this.user },
-      uploadingImage: false
+      uploadingImage: false,
+      locationOptions: []
     }
   },
   props: {
@@ -100,6 +110,12 @@ export default {
   },
   methods: {
     ...mapActions('auth', ['uploadAvatar']),
+    async loadLocationOptions () {
+      if (this.locationOptions.lenth) return
+
+      const countries = await fetch('https://restcountries.com/v3.1/all').then(res => res.json())
+      this.locationOptions = countries.sort((a, b) => a.name.common.localeCompare(b.name.common))
+    },
     async handleAvatarUpload (e) {
       this.uploadingImage = true
       const file = e.target.files[0]
