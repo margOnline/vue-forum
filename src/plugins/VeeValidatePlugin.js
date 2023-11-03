@@ -1,5 +1,5 @@
 import { Form, Field, ErrorMessage, defineRule, configure } from 'vee-validate'
-import { required, email, min } from '@vee-validate/rules'
+import { required, email, min, url } from '@vee-validate/rules'
 import { localize } from '@vee-validate/i18n'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import db from '@/config/firebase'
@@ -8,6 +8,7 @@ export default (app) => {
   defineRule('required', required)
   defineRule('email', email)
   defineRule('min', min)
+  defineRule('url', url)
   defineRule('unique', async (value, args) => {
     let dbCollection, field
     if (Array.isArray(args)) {
@@ -25,7 +26,8 @@ export default (app) => {
         required: '{field} is required',
         email: '{field} must be a valid email',
         min: '{field} must be at least 0:{min} characters long',
-        unique: '{field} is already taken'
+        unique: '{field} is already taken',
+        url: '{field} must be a valid URL'
       }
     })
   })
