@@ -1,4 +1,6 @@
-# masterclass3
+# Forum
+A VUE 3 project following [Vue School's masterclass tutorial](https://vueschool.io/courses/the-vuejs-3-master-class). 
+Uses Firebase v9 instead of v8 which the masterclass uses.
 
 ## Project setup
 ```
