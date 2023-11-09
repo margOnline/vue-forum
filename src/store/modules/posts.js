@@ -20,15 +20,18 @@ export default {
     async createPost ({ commit, state, rootState }, post) {
       post.userId = rootState.auth.authId
       post.publishedAt = serverTimestamp()
+      post.firstInThread = post.firstInThread || false
       const batch = writeBatch(db)
       const postRef = doc(collection(db, 'posts'))
       const threadRef = doc(db, 'threads', post.threadId)
       const userRef = doc(db, 'users', rootState.auth.authId)
       batch.set(postRef, post)
-      batch.update(threadRef, {
-        posts: arrayUnion(postRef.id),
-        contributors: arrayUnion(rootState.auth.authId)
-      })
+
+      const threadUpdates = { posts: arrayUnion(postRef.id) }
+      if (!post.firstInThread) {
+        threadUpdates.contributors = arrayUnion(rootState.auth.authId)
+      }
+      batch.update(threadRef, threadUpdates)
       batch.update(userRef, {
         postsCount: increment(1)
       })
@@ -44,10 +47,12 @@ export default {
         { parentId: post.threadId, childId: newPost.id },
         { root: true }
       )
-      commit('threads/appendContributorToThread',
-        { parentId: post.threadId, childId: rootState.auth.authId },
-        { root: true }
-      )
+      if (!post.firstInThread) {
+        commit('threads/appendContributorToThread',
+          { parentId: post.threadId, childId: rootState.auth.authId },
+          { root: true }
+        )
+      }
       return findById(state.items, postRef.id)
     },
     async updatePost ({ commit, state, rootState }, { id, text }) {

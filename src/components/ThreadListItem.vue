@@ -14,7 +14,10 @@
     </div>
 
     <div class="activity">
-      <p class="replies-count">{{ thread.repliesCount }} replies</p>
+      <p class="replies-count">
+        {{ thread.repliesCount }}
+        {{ thread.repliesCount === 1 ? "reply" : "replies" }}
+      </p>
       <AppAvatarImage
         :src="user.avatar"
         :alt="user.name"
