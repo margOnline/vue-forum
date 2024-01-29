@@ -2,14 +2,14 @@
   <div class="col-full">
     <div class="thread-list">
       <h2 class="list-title">Threads</h2>
-      <thread-list-item
-        v-for="thread in threads"
-        :key="thread.id"
-        :thread="thread"
-        :user="userById(thread.userId)"
-      >
-
-      </thread-list-item>
+      <div v-if="threads.length">
+        <thread-list-item
+          v-for="thread in threads"
+          :key="thread.id"
+          :thread="thread"
+          :user="userById(thread.userId)"
+        >
+      </div>
     </div>
   </div>
 </template>

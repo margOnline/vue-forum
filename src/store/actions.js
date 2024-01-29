@@ -29,6 +29,7 @@ export default {
     })
   },
   fetchItems ({ dispatch }, { ids, resource, emoji, snapshot = null }) {
+    ids = ids || []
     return Promise.all(ids.map(id => dispatch('fetchItem', { id, resource, emoji, snapshot })))
   },
   async unsubscribeAllSnapshots ({ state, commit }) {
